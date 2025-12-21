@@ -40,5 +40,4 @@ std::vector<int> in2 {5,8,8,5};
   std::cout << "res1: " <<  sol.taskSchedulerII(in2, 2) << '\n';
 	
 	return(0);
-
 }

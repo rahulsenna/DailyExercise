@@ -5,38 +5,21 @@ using namespace std;
 class Solution
 {
 public:
-
-    int findSwap(vector<int> &nums, int s)
-    {
-        int rep = nums[s - 1];
-        int swap_idx = -1;
-        int swap = INT_MAX;
-        for (int j = s; j < nums.size(); ++j)
-        {
-            if (nums[j] > rep && nums[j] < swap)
-            {
-                swap = nums[j];
-                swap_idx = j;
-            }
-        }
-        return swap_idx;
-    }
     void nextPermutation(vector<int> &nums)
     {
-
-        int size = nums.size() - 1;
-
-        for (int i = size; i > 0; --i)
+        auto it = adjacent_find(nums.rbegin(), nums.rend(), std::greater<int>());
+        if (it != nums.rend())
         {
-            if (nums[i] > nums[i - 1])
+            auto pivot = std::next(it);
+            auto successor = std::upper_bound(nums.rbegin(), it, *pivot);
+            if (successor != nums.rend())
             {
-                int swapIdx = findSwap(nums, i);
-                swap(nums[i-1], nums[swapIdx]);
-                sort(nums.begin()+i, nums.end());
+                std::swap(*pivot, *successor);
+                std::reverse(nums.rbegin(), pivot);
                 return;
             }
         }
-        sort(nums.begin(), nums.end());
+        std::reverse(nums.begin(), nums.end());
     }
 };
 
