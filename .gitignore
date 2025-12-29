@@ -2,3 +2,8 @@ cpp/bin/*
 *.db*
 **/bin/*
 **/obj/*
+**dbcache**
+
+**/CompiledModels/**
+**.DS_Store
+**/.vs/**
