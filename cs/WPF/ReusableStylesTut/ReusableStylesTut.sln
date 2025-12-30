@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 18
+VisualStudioVersion = 18.1.11312.151 d18.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReusableStylesTut", "ReusableStylesTut.csproj", "{773061DC-99AA-BAA7-C15A-13A5B12B6F17}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{773061DC-99AA-BAA7-C15A-13A5B12B6F17}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{773061DC-99AA-BAA7-C15A-13A5B12B6F17}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{773061DC-99AA-BAA7-C15A-13A5B12B6F17}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{773061DC-99AA-BAA7-C15A-13A5B12B6F17}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {87A820A2-0561-4033-96B0-AF22C0A04115}
+	EndGlobalSection
+EndGlobal
