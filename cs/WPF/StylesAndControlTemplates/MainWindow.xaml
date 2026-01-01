@@ -1,0 +1,21 @@
+﻿<Window x:Class="StylesAndControlTemplates.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:StylesAndControlTemplates"
+        mc:Ignorable="d"
+        Background="#333333"
+        Title="MainWindow" Height="250" Width="400">
+    <Window.Resources>
+
+    </Window.Resources>
+   
+    <Grid>
+        <ScrollViewer>
+            <Rectangle Height="1000" />
+        </ScrollViewer>
+        <Button Width="100" Height="50" Content="I'm a Button" Background="#222222" Foreground="White" />
+
+    </Grid>
+</Window>

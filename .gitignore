@@ -7,3 +7,4 @@ cpp/bin/*
 **/CompiledModels/**
 **.DS_Store
 **/.vs/**
+**/Platforms/*
