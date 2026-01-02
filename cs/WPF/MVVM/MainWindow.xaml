@@ -1,0 +1,53 @@
+﻿<Window x:Class="ViewModelsInMVVM.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ViewModelsInMVVM"
+        xmlns:viewmodel="clr-namespace:ViewModelsInMVVM.ViewModel" 
+        d:DataContext="{d:DesignInstance Type=viewmodel:MainWindowViewModel}"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="500">
+    <Window.DataContext>
+        <viewmodel:MainWindowViewModel />
+    </Window.DataContext>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+            <Button Content="Add" Height="30" Width="75" Command="{Binding AddCommand}" />
+            <Button Content="Delete" Height="30" Width="75" Command="{Binding DeleteCommand}" />
+            <Button Content="Save" Height="30" Width="75" Command="{}" />
+        </StackPanel>
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="3*" />
+                <ColumnDefinition Width="7*" />
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Grid.Column="0" >
+                <Label Content="Name" />
+                <TextBox Margin="5,0,0,15" Text="{Binding SelectedItem.Name}" />
+                <Label Content="Serial Number" />
+                <TextBox Margin="5,0,0,15" Text="{Binding SelectedItem.SerialNumber}" />
+                <Label Content="Quantity" />
+                <TextBox Margin="5,0,0,15" Text="{Binding SelectedItem.Quantity}" />
+            </StackPanel>
+            
+            <DataGrid Grid.Column="1" CanUserAddRows="False" CanUserDeleteRows="False"
+                      ItemsSource="{Binding Items}"
+                      SelectedItem="{Binding SelectedItem}"
+                      AutoGenerateColumns="False">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Name" Binding="{Binding Name, UpdateSourceTrigger=PropertyChanged}" Width="4*" />
+                    <DataGridTextColumn Header="Serial" Binding="{Binding SerialNumber, UpdateSourceTrigger=PropertyChanged}" Width="4*" />
+                    <DataGridTextColumn Header="Quantity" Binding="{Binding Quantity, UpdateSourceTrigger=PropertyChanged}" Width="2*" />
+                </DataGrid.Columns>
+            </DataGrid>
+           
+        </Grid>
+
+    </Grid>
+</Window>
