@@ -14,6 +14,9 @@ internal class Program
     Console.WriteLine("Hello, World!");
     
     var db = new BloggingContext();
+
+    Console.WriteLine(db.Model.ToDebugString());
+
     Console.Error.WriteLine($"db.DbPath: {db.DbPath}");
     
     // Create
