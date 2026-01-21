@@ -8,3 +8,4 @@ cpp/bin/*
 **.DS_Store
 **/.vs/**
 **/Platforms/*
+**/wwwroot/*
