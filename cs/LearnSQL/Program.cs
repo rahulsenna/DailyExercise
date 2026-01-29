@@ -30,27 +30,76 @@ async Task LoadData(string dbfile)
 async Task ReadAllProducts()
 {
 	var allProductsSql = connection.CreateCommand();
-	allProductsSql.CommandText = @"SELECT name, category_name, price, price * 1.1
-																	FROM Products
-																	LIMIT -1
-																	";
+	allProductsSql.CommandText = @"
+		SELECT name, category_name, price, price * 1.1 AS new_price
+		FROM Products
+		LIMIT 20";
+	await PrintQueryResults(allProductsSql);
+}
 
-	var reader = await allProductsSql.ExecuteReaderAsync();
+async Task PrintQueryResults(SqliteCommand command)
+{
+	using var reader = await command.ExecuteReaderAsync();
 
+	if (!reader.HasRows)
+	{
+		Console.Error.WriteLine("No rows returned.");
+		return;
+	}
 
-	Console.Error.WriteLine(new string('-', 110));
-	Console.Error.WriteLine($"{"Name",-50} | {"Category",-30} | {"Price",-12} | {"New Price",-12}");
-	Console.Error.WriteLine(new string('-', 110));
+	int columnCount = reader.FieldCount;
+	var columnNames = new string[columnCount];
+	var widths = new int[columnCount];
+
+	for (int i = 0; i < columnCount; i++)
+	{
+		columnNames[i] = reader.GetName(i);
+		widths[i] = columnNames[i].Length;
+	}
+
+	var allRows = new List<string[]>();
 
 	while (await reader.ReadAsync())
 	{
-		string productName = reader.GetString(0);
-		string categoryName = reader.GetString(1);
-		float price = reader.GetFloat(2);
-		float newPrice = reader.GetFloat(3);
+		var values = new string[columnCount];
+		for (int i = 0; i < columnCount; i++)
+		{
+			if (reader.IsDBNull(i))
+			{
+				values[i] = "NULL";
+			}
+			else
+			{
+				Type fieldType = reader.GetFieldType(i);
 
-		Console.Error.WriteLine($"{productName,-50} | {categoryName,-30} | {price,-12:F2} | {newPrice,-12:F2}");
+				if (fieldType == typeof(float) || fieldType == typeof(double) || fieldType == typeof(decimal))
+				{
+					values[i] = $"{reader.GetValue(i):F2}";
+				}
+				else
+				{
+					values[i] = reader.GetValue(i)?.ToString() ?? "NULL";
+				}
+			}
+
+			widths[i] = Math.Max(widths[i], values[i].Length);
+		}
+
+		allRows.Add(values);
 	}
 
-	Console.Error.WriteLine(new string('-', 110));
+	int totalWidth = widths.Sum() + (columnCount - 1) * 3;
+
+	Console.Error.WriteLine(new string('-', totalWidth));
+	Console.Error.WriteLine(string.Join(" | ",
+			columnNames.Select((name, i) => name.PadRight(widths[i]))));
+	Console.Error.WriteLine(new string('-', totalWidth));
+
+	foreach (var row in allRows)
+	{
+		Console.Error.WriteLine(string.Join(" | ",
+				row.Select((val, i) => val.PadRight(widths[i]))));
+	}
+
+	Console.Error.WriteLine(new string('-', totalWidth));
 }
