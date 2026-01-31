@@ -9,3 +9,6 @@ cpp/bin/*
 **/.vs/**
 **/Platforms/*
 **/wwwroot/*
+**/error.txt
+**/input.txt
+**/output.txt

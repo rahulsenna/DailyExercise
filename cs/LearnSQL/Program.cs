@@ -103,3 +103,17 @@ async Task PrintQueryResults(SqliteCommand command)
 
 	Console.Error.WriteLine(new string('-', totalWidth));
 }
+
+
+
+/*
+https://datalemur.com/sql-tutorial/sql-between
+https://datalemur.com/questions/sql-between-practice-exercise
+SELECT manufacturer, drug, units_sold
+FROM pharmacy_sales
+WHERE (manufacturer = 'Biogen' OR manufacturer = 'AbbVie' OR manufacturer = 'Eli Lilly')
+AND units_sold BETWEEN 100000 AND 105000;
+
+
+
+*/
