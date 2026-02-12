@@ -38,19 +38,22 @@ int main()
 
 void solve()
 {
-	int n, c;
-	cin >> n >> c;
+	int k, q;
+	cin >> k >> q;
 
-	std::unordered_map<int, int> map;
-	for (int a, i = 0; i < n; ++i)
+	int minK = INT_MAX;
+
+	for (int a, i = 0; i < k; ++i)
 	{
 		cin >> a;
-		map[a]++;
+		minK = min(minK, a);
 	}
+	minK--;
 
-	int res = 0;
-	for (auto [k, v] : map)
-		res += min(v, c);
-
-	cout << res << '\n';
+	for (int a, i = 0; i < q; ++i)
+	{
+		cin >> a;
+		cout << min(minK, a) << ' ';
+	}
+	cout << '\n';
 }
