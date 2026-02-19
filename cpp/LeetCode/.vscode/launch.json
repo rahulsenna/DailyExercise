@@ -22,7 +22,7 @@
             "type": "lldb",
             "request": "launch",
             "program": "${workspaceFolder}/bin/program",
-            "preLaunchTask": "C/C++: g++-15 build active file"
+            "preLaunchTask": "C/C++: clang++ build active file"
 				}
     ]
 }
