@@ -15,14 +15,16 @@
             "environment": [],
             "externalConsole": false,
             "MIMode": "lldb",
-            "preLaunchTask": "C/C++: g++-15 build active file"
+            "preLaunchTask": "C/C++: g++-15 build active file",
+						"postDebugTask": "kill_lldb"
         },
 				{
 					"name": "CodeLLDB",
             "type": "lldb",
             "request": "launch",
             "program": "${workspaceFolder}/bin/program",
-            "preLaunchTask": "C/C++: clang++ build active file"
+            "preLaunchTask": "C/C++: clang++ build active file",
+						"postDebugTask": "kill_codelldb"
 				}
     ]
 }
