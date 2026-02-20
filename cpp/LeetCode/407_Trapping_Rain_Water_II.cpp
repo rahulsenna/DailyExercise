@@ -8,122 +8,6 @@
 
 using namespace std;
 
-/* 
-int trapRainWater(vector<vector<int>> &heightMap)
-{
-	int height = heightMap.size();
-	int width	 = heightMap[0].size();
-
-	vector<vector<int>> leftMap = heightMap;
-	for (int y = 0; y < height; ++y)
-	{
-		int left_max = 0;
-		for (int x = 0; x < width; ++x)
-		{
-			leftMap[y][x] = left_max;
-			left_max			= max(left_max, heightMap[y][x]);
-		}
-	}
-
-	vector<vector<int>> rightMap = heightMap;
-	for (int y = 0; y < height; ++y)
-	{
-		int right_max = 0;
-		for (int x = width - 1; x >= 0; --x)
-		{
-			rightMap[y][x] = right_max;
-			right_max			 = max(right_max, heightMap[y][x]);
-		}
-	}
-
-	vector<vector<int>> upMap = heightMap;
-	for (int x = 0; x < width; ++x)
-	{
-		int up_max = 0;
-		for (int y = 0; y < height; ++y)
-		{
-			upMap[y][x] = up_max;
-			up_max			= max(up_max, heightMap[y][x]);
-		}
-	}
-
-	vector<vector<int>> downMap = heightMap;
-	for (int x = 0; x < width; ++x)
-	{
-		int up_max = 0;
-		for (int y = height - 1; y >= 0; --y)
-		{
-			downMap[y][x] = up_max;
-			up_max				= max(up_max, heightMap[y][x]);
-		}
-	}
-
-	int res = 0;
-
-	for (int y = 0; y < height; ++y)
-	{
-		for (int x = 0; x < width; ++x)
-		{
-			int m = min(min(upMap[y][x], downMap[y][x]), min(leftMap[y][x], rightMap[y][x]));
-			res += max(0, m - heightMap[y][x]);
-		}
-	}
-
-	return res;
-} */
-/*
-int trapRainWater(vector<vector<int>> &heightMap)
-{
-	int height = heightMap.size();
-	int width	 = heightMap[0].size();
-
-	std::vector<pair<int, int>> dirs = {
-	{ 1,  0},
-	{ 0,  1},
-	{-1,  0},
-	{ 0, -1}};
-
-	set<pair<int,int>> seen {};
-
-	int water_level = 0;
-	int new_water_level = INT_MAX;
-	int dir_idx = 0;
-	int x = 0, y = 0;
-
-	int res = 0;
-	while(1)
-	{
-		x += dirs[dir_idx].first;
-		y += dirs[dir_idx].second;
-		if (seen.count({x,y}) or x >= width or x < 0 or y >= height or y < 0)
-		{
-			x -= dirs[dir_idx].first;
-			y -= dirs[dir_idx].second;
-			dir_idx = (dir_idx + 1) % 4;
-
-			if (dir_idx == 0)
-			{
-				water_level = max(water_level, new_water_level);
-				new_water_level = INT_MAX;
-			}
-			continue;
-		}
-
-		seen.insert({x,y});
-
-		res += max(0, water_level - heightMap[y][x]);
-		new_water_level = min (new_water_level, heightMap[y][x]);
-
-		
-		if (seen.size() >= height*width)
-		{ 
-			break;
-		}
-	}
-
-	return res;
-} */
-
 int trapRainWater(vector<vector<int>> &heightMap)
 {
 
@@ -132,9 +16,10 @@ int trapRainWater(vector<vector<int>> &heightMap)
 
 	std::vector<std::pair<int, int>> D{{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 
-	std::priority_queue<std::vector<int>, std::vector<std::vector<int>>, greater<>> pq;
+	using height_xy = pair<int,pair<int,int>>;
+	std::priority_queue<height_xy, std::vector<height_xy>, greater<>> pq;
 
-	std::set<pair<int, int>> seen;
+	vector<vector<bool>> seen(height, vector<bool>(width, false));
 
 	for (int y = 0; y < height; ++y)
 	{
@@ -142,15 +27,15 @@ int trapRainWater(vector<vector<int>> &heightMap)
 		{
 			if (not(x == 0 or x == width - 1 or y == 0 or y == height - 1))
 				continue;
-			seen.insert({x, y});
-			pq.push({heightMap[y][x], x, y});
+			seen[y][x] = true;
+			pq.push({heightMap[y][x], {x, y}});
 		}
 	}
 	int res = 0;
 	while (not pq.empty())
 	{
 		auto top = pq.top();
-		int	 h = top[0], x = top[1], y = top[2];
+		int	 h = top.first, x = top.second.first, y = top.second.second;
 		int	 d = 5;
 		pq.pop();
 
@@ -158,13 +43,13 @@ int trapRainWater(vector<vector<int>> &heightMap)
 		{
 			int dx = x + D[i].first;
 			int dy = y + D[i].second;
-			if (dx <= 0 or dx >= width or dy <= 0 or dy >= height or seen.count({dx, dy}))
+			if (dx <= 0 or dx >= width or dy <= 0 or dy >= height or seen[dy][dx])
 				continue;
 
-			seen.insert({dx, dy});
+			seen[dy][dx] = true;
 			int cH = heightMap[dy][dx];
 			int mH = max(h, cH);
-			pq.push({mH, dx, dy});
+			pq.push({mH, {dx, dy}});
 			res += max(0, mH - cH);
 		}
 	}
