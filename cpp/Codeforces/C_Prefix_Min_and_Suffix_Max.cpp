@@ -45,17 +45,17 @@ void solve()
   for (auto &e : a)
     cin >> e;
 
-  std::priority_queue<int, std::vector<int>, std::greater<int>> min_heap;
-  std::priority_queue<int, std::vector<int>>                    max_heap;
+  int min_n = INT_MAX;
+  int max_n = INT_MIN;
 
   string res(n, '0');
   for (int i = 0, j = n - 1; i < n; ++i, --j)
   {
-    min_heap.push(a[i]);
-    max_heap.push(a[j]);
-    if (min_heap.top() >= a[i])
+    min_n = min(min_n, a[i]);
+    max_n = max(max_n, a[j]);
+    if (min_n >= a[i])
       res[i] = '1';
-    if (max_heap.top() <= a[j])
+    if (max_n <= a[j])
       res[j] = '1';
   }
 
