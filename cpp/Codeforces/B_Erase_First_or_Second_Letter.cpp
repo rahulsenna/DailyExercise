@@ -56,7 +56,7 @@ void solve()
     }
     res += distinct;
     // all distinct string of len n will have fixed last n-1 chars
-    // how many distinct chars so far tell how many distinct strings can be created
+    // how many distinct chars so far tell how many distinct strings can be created of len n
   }
 
   std::cout << res << '\n';
