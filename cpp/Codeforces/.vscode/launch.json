@@ -23,6 +23,13 @@
             "request": "launch",
             "program": "${workspaceFolder}/bin/program",
             "preLaunchTask": "C/C++: g++-15 build active file"
+            ,
+            "presentation":
+            {
+              "hidden": true,
+              "group": "",
+              "order": 1
+            }
 				}
     ]
 }
