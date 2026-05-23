@@ -28,25 +28,22 @@ void solve()
   int a, b, c;
   cin >> a >> b >> c;
 
-  if ((a + c) % 2 == 0)
-  {
-    int target = (a + c) / 2;
-
-    if (target > 0 && target % b == 0)
-    {
-      cout << "YES\n";
-      return;
-    }
-  }
-
-  int b2 = 2 * b;
-  if ((b2 - c) > 0 && (b2 - c) % a == 0)
+  // 2b = (a + c)
+  // a = 2b - c
+  if ((2 * b - c) > 0 && (2 * b - c) % a == 0)
   {
     cout << "YES\n";
     return;
   }
 
-  if ((b2 - a) > 0 && (b2 - a) % c == 0)
+  // b = (a + c) / 2
+  if ((a + c) % 2 == 0 && ((a + c) / 2) % b == 0)
+  {
+    cout << "YES\n";
+    return;
+  }
+  // c = 2b - a
+  if ((2 * b - a) > 0 && (2 * b - a) % c == 0)
   {
     cout << "YES\n";
     return;
