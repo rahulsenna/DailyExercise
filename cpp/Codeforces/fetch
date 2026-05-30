@@ -1,0 +1,136 @@
+#! python3
+import sys
+import os
+import requests
+from bs4 import BeautifulSoup
+import re
+
+def parse_url(url):
+    """
+    Extracts the contest ID and problem index from a Codeforces URL.
+    """
+    match = re.search(r'/(contest|problemset/problem)/(\d+)(/problem)?/([A-Za-z0-9]+)', url)
+    if match:
+        contest_id = match.group(2)
+        problem_id = match.group(4)
+        return f"{contest_id}_{problem_id}"
+    return "solution" 
+
+def extract_problem_data(url):
+    """
+    Scrapes the Codeforces problem page for sample inputs, outputs, and the title.
+    """
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+    }
+    
+    try:
+        response = requests.get(url, headers=headers)
+        response.raise_for_status()
+    except requests.exceptions.RequestException as e:
+        print(f"Error fetching the URL: {e}")
+        sys.exit(1)
+
+    soup = BeautifulSoup(response.text, 'html.parser')
+    
+    # 1. Extract Sample Inputs
+    input_divs = soup.find_all('div', class_='input')
+    extracted_inputs = []
+    for div in input_divs:
+        pre_tag = div.find('pre')
+        if pre_tag:
+            text = pre_tag.get_text(separator='\n', strip=True)
+            extracted_inputs.append(text)
+            
+    # 2. Extract Expected Outputs
+    output_divs = soup.find_all('div', class_='output')
+    extracted_outputs = []
+    for div in output_divs:
+        pre_tag = div.find('pre')
+        if pre_tag:
+            text = pre_tag.get_text(separator='\n', strip=True)
+            extracted_outputs.append(text)
+            
+    # 3. Extract Problem Title
+    clean_title = ""
+    title_div = soup.select_one('.problem-statement .header .title')
+    if title_div:
+        raw_title = title_div.get_text() 
+        parts = raw_title.split('.', 1)
+        if len(parts) > 1:
+            title_text = parts[1].strip()
+        else:
+            title_text = raw_title.strip()
+            
+        clean_title = re.sub(r'[^A-Za-z0-9]+', '_', title_text).strip('_')
+            
+    return extracted_inputs, extracted_outputs, clean_title
+
+def main():
+    if len(sys.argv) < 2:
+        print("Usage: python cph_clone.py <codeforces_url>")
+        sys.exit(1)
+        
+    url = sys.argv[1]
+    base_name = parse_url(url)
+    
+    print("Fetching problem data...")
+    inputs, outputs, title = extract_problem_data(url)
+    
+    # Construct final problem name
+    if title and base_name != "solution":
+        problem_name = f"{base_name}_{title}"
+    else:
+        problem_name = base_name
+
+    cpp_filename = f"{problem_name}.cpp"
+    print(f"Target file: {cpp_filename}")
+    
+    # Write input.txt
+    if not inputs:
+        print("No inputs found. Make sure it is a valid Codeforces problem URL.")
+    else:
+        with open("input.txt", "w", encoding="utf-8") as f:
+            for i, inp in enumerate(inputs):
+                f.write(inp + "\n")
+                if i < len(inputs) - 1:
+                    f.write("\n") 
+        print(f"Saved {len(inputs)} test case(s) to input.txt")
+
+    # Write expected.txt
+    if outputs:
+        with open("expected.txt", "w", encoding="utf-8") as f:
+            for i, out in enumerate(outputs):
+                f.write(out + "\n")
+                if i < len(outputs) - 1:
+                    f.write("\n") 
+        print(f"Saved {len(outputs)} expected output(s) to expected.txt")
+
+    # Handle the C++ file creation
+    template_filename = "template.cpp"
+    if not os.path.exists(cpp_filename):
+        if os.path.exists(template_filename):
+            with open(template_filename, "r", encoding="utf-8") as template_file:
+                content = template_file.read()
+            with open(cpp_filename, "w", encoding="utf-8") as cpp_file:
+                cpp_file.write(content)
+            print(f"Created {cpp_filename} from {template_filename}")
+        else:
+            print(f"'{template_filename}' not found. Creating a blank {cpp_filename}")
+            with open(cpp_filename, "w", encoding="utf-8") as cpp_file:
+                cpp_file.write("#include <iostream>\nusing namespace std;\n\nint main() {\n    \n    return 0;\n}\n")
+    else:
+        print(f"File {cpp_filename} already exists. Skipping creation to prevent overwriting.")
+
+    # Create .cph_bin directory and track the current problem
+    cph_bin_dir = ".cph_bin"
+    os.makedirs(cph_bin_dir, exist_ok=True)
+    
+    current_problem_path = os.path.join(cph_bin_dir, "current-problem")
+    with open(current_problem_path, "w", encoding="utf-8") as f:
+        f.write(cpp_filename)
+    print(f"Updated {current_problem_path} -> {cpp_filename}")
+
+if __name__ == "__main__":
+    main()
+

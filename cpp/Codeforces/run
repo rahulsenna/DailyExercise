@@ -1,0 +1,144 @@
+#!/bin/bash
+
+# ANSI Color Codes for pretty printing
+GREEN='\033[92m'
+RED='\033[91m'
+YELLOW='\033[93m'
+CYAN='\033[96m'
+RESET='\033[0m'
+
+get_current_problem() {
+    local path=".cph_bin/current-problem"
+    if [ ! -f "$path" ]; then
+        echo -e "${RED}✗ Error: '${path}' not found.${RESET}"
+        echo "Run your fetch script first to set the current problem."
+        exit 1
+    fi
+    
+    # Read the file and strip any newline/carriage returns
+    cpp_file=$(cat "$path" | tr -d '\r\n')
+    
+    if [ ! -f "$cpp_file" ]; then
+        echo -e "${RED}✗ Error: C++ file '${cpp_file}' not found.${RESET}"
+        exit 1
+    fi
+}
+
+compare_outputs() {
+    local expected_file="expected.txt"
+    local output_file="output.txt"
+
+    if [ ! -f "$expected_file" ]; then
+        echo -e "${YELLOW}⚠ Warning: '${expected_file}' not found. Cannot verify correctness.${RESET}"
+        return
+    fi
+        
+    if [ ! -f "$output_file" ]; then
+        echo -e "${RED}✗ Error: '${output_file}' not found. Ensure your C++ code writes to it.${RESET}"
+        return
+    fi
+
+    # Read expected.txt into array, stripping trailing whitespaces
+    local expected_lines=()
+    while IFS= read -r line || [[ -n "$line" ]]; do
+        expected_lines+=("$line")
+    done < <(sed 's/[[:space:]]*$//' "$expected_file")
+
+    # Remove trailing empty lines
+    while [[ ${#expected_lines[@]} -gt 0 && -z "${expected_lines[-1]}" ]]; do
+        unset 'expected_lines[-1]'
+    done
+
+    # Read output.txt into array, stripping trailing whitespaces
+    local output_lines=()
+    while IFS= read -r line || [[ -n "$line" ]]; do
+        output_lines+=("$line")
+    done < <(sed 's/[[:space:]]*$//' "$output_file")
+
+    # Remove trailing empty lines
+    while [[ ${#output_lines[@]} -gt 0 && -z "${output_lines[-1]}" ]]; do
+        unset 'output_lines[-1]'
+    done
+
+    echo -e "\n${CYAN}--- Test Results ---${RESET}"
+    
+    # Determine the maximum number of lines between the two files
+    local max_lines=${#expected_lines[@]}
+    if [[ ${#output_lines[@]} -gt $max_lines ]]; then
+        max_lines=${#output_lines[@]}
+    fi
+
+    local all_passed=true
+    
+    # Iterate through all lines and print their status
+    for (( i=0; i<max_lines; i++ )); do
+        local exp="<EOF>"
+        local out="<EOF>"
+        
+        [[ $i -lt ${#expected_lines[@]} ]] && exp="${expected_lines[$i]}"
+        [[ $i -lt ${#output_lines[@]} ]] && out="${output_lines[$i]}"
+        
+        if [[ "$exp" == "$out" ]]; then
+            echo -e "${GREEN}✓ Line $((i + 1)): ${out}${RESET}"
+        else
+            all_passed=false
+            echo -e "${RED}✗ Line $((i + 1)): Got '${out}'  |  Expected '${exp}'${RESET}"
+        fi
+    done
+            
+    echo -e "${CYAN}--------------------${RESET}"
+    
+    if $all_passed; then
+        echo -e "${GREEN}✓ ALL TESTS PASSED!${RESET}\n"
+    else
+        echo -e "${RED}✗ TESTS FAILED${RESET}\n"
+    fi
+}
+
+main() {
+    # 1. Read current problem
+    get_current_problem
+    
+    local binary_name="${cpp_file%.cpp}"
+    # Append .exe if running on Windows (Git Bash / MSYS)
+    if [[ "$OSTYPE" == "msys" || "$OSTYPE" == "cygwin" ]]; then
+        binary_name="${binary_name}.exe"
+    fi
+    local binary_path=".cph_bin/${binary_name}"
+
+    # 1.5 clang-format (Suppresses output and continues even if clang-format fails/is missing)
+    clang-format -i "$cpp_file" --lines=30:999 2>/dev/null || true
+
+    # 2. Compile the C++ file
+    echo -e "${CYAN}Compiling ${cpp_file} with g++ -std=c++23...${RESET}"
+    
+    if g++ -std=c++23 "$cpp_file" -o "$binary_path"; then
+        echo -e "${GREEN}✓ Compilation successful.${RESET}"
+    else
+        echo -e "${RED}✗ Compilation failed.${RESET}"
+        exit 1
+    fi
+
+    # 3. Run the binary (C++ code handles reading/writing txt files)
+    echo -e "${CYAN}Running ${binary_path}...${RESET}"
+    
+    # Using a 5-second timeout to catch infinite loops
+    if timeout 5s "./${binary_path}"; then
+        echo -e "${GREEN}✓ Execution completed.${RESET}"
+    else
+        local exit_code=$?
+        if [[ $exit_code -eq 124 ]]; then
+            # 124 is the standard exit code for GNU timeout
+            echo -e "${RED}✗ Execution timed out (infinite loop?).${RESET}"
+        else
+            echo -e "${RED}✗ Runtime error! Exit code: ${exit_code}${RESET}"
+        fi
+        exit 1
+    fi
+
+    # 4. Compare outputs
+    compare_outputs
+}
+
+# Execute main function with any passed arguments
+main "$@"

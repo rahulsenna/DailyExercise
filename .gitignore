@@ -12,3 +12,5 @@ cpp/bin/*
 **/error.txt
 **/input.txt
 **/output.txt
+**/expected.txt
+**/.cph_bin/**

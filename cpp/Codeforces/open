@@ -1,0 +1,24 @@
+#!/bin/bash
+
+# Path to the file that tracks the current problem
+TRACKER_FILE=".cph_bin/current-problem"
+
+# 1. Check if the tracker file exists
+if [ ! -f "$TRACKER_FILE" ]; then
+    echo -e "\033[91m✗ Error: '$TRACKER_FILE' not found.\033[0m"
+    echo "Run your fetch script first to set the current problem."
+    exit 1
+fi
+
+# 2. Read the C++ filename from the tracker file
+CPP_FILE=$(cat "$TRACKER_FILE")
+
+# 3. Check if the C++ file actually exists
+if [ ! -f "$CPP_FILE" ]; then
+    echo -e "\033[91m✗ Error: C++ file '$CPP_FILE' not found.\033[0m"
+    exit 1
+fi
+
+# 4. Open the file in micro
+micro "$CPP_FILE"
+
