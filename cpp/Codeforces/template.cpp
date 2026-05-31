@@ -31,3 +31,6 @@ int main()
 void solve()
 {
 }
+
+// [$name$] ($url$)
+// [$date$] [$time$]

@@ -4,6 +4,7 @@ import os
 import requests
 from bs4 import BeautifulSoup
 import re
+from datetime import datetime
 
 def parse_url(url):
     """
@@ -106,12 +107,20 @@ def main():
                     f.write("\n") 
         print(f"Saved {len(outputs)} expected output(s) to expected.txt")
 
-    # Handle the C++ file creation
+    # Handle the C++ file creation with Template Substitution
     template_filename = "template.cpp"
     if not os.path.exists(cpp_filename):
         if os.path.exists(template_filename):
             with open(template_filename, "r", encoding="utf-8") as template_file:
                 content = template_file.read()
+            
+            # --- NEW: Replace Placeholders ---
+            now = datetime.now()
+            content = content.replace("$name$", problem_name)
+            content = content.replace("$url$", url)
+            content = content.replace("$date$", now.strftime("%Y-%m-%d"))
+            content = content.replace("$time$", now.strftime("%H:%M:%S"))
+            
             with open(cpp_filename, "w", encoding="utf-8") as cpp_file:
                 cpp_file.write(content)
             print(f"Created {cpp_filename} from {template_filename}")
