@@ -107,7 +107,7 @@ main() {
     local binary_path=".cph_bin/${binary_name}"
 
     # 1.5 clang-format (Suppresses output and continues even if clang-format fails/is missing)
-    clang-format -i "$cpp_file" --lines=30:999 2>/dev/null || true
+    clang-format -i "$cpp_file" --lines=23:999 2>/dev/null || true
 
     # 2. Compile the C++ file
     echo -e "${CYAN}Compiling ${cpp_file} with g++ -std=c++23...${RESET}"
