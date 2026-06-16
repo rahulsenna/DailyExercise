@@ -5,7 +5,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "(lldb) Launch",
+            "name": "LLDB g++",
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/bin/program",
@@ -15,21 +15,16 @@
             "environment": [],
             "externalConsole": false,
             "MIMode": "lldb",
-            "preLaunchTask": "C/C++: g++-15 build active file"
+            "preLaunchTask": "g++-15 activeFile",
         },
-				{
-					"name": "CodeLLDB",
-            "type": "lldb",
-            "request": "launch",
-            "program": "${workspaceFolder}/bin/program",
-            "preLaunchTask": "C/C++: g++-15 build active file"
-            ,
-            "presentation":
-            {
-              "hidden": true,
-              "group": "",
-              "order": 1
-            }
-				}
+        {
+          "type": "lldb",
+          "request": "launch",
+          "name": "CodeLLDB g++",
+          "program": "${workspaceFolder}/bin/program",
+          "args": [],
+          "cwd": "${workspaceFolder}",
+          "preLaunchTask": "g++-15 activeFile",      
+        },
     ]
 }
