@@ -14,3 +14,5 @@ cpp/bin/*
 **/output.txt
 **/expected.txt
 **/.cph_bin/**
+cpp/Metal/*/build/**
+cpp/Metal/includes/**
