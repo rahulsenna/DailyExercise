@@ -1,0 +1,6 @@
+{
+  "cSpell.enabled": true,
+  "editor.inlayHints.enabled": "on",
+  "C_Cpp.inlayHints.parameterNames.suppressWhenArgumentContainsName": false,
+  "C_Cpp.inlayHints.referenceOperator.enabled": true
+}
