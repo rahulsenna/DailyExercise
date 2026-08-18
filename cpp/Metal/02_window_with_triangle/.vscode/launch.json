@@ -1,0 +1,17 @@
+{
+  "configurations": [
+    {
+      "name": "Debug Engine",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/build/program",
+      "args": [],
+      "cwd": "${workspaceFolder}",
+      "environment": [],
+      "externalConsole": false,
+      "MIMode": "lldb",
+      "preLaunchTask": "Build"
+    }
+  ],
+  "version": "2.0.0"
+}
