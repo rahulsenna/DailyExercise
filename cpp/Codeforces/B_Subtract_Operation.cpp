@@ -27,11 +27,12 @@ void solve()
   std::vector<int> a(n);
   for (auto &e : a)
     cin >> e;
-  set<int> aset(a.begin(), a.end());
+  
+  std::sort(a.begin(), a.end());
 
   for (auto e : a)
   {
-    if (aset.contains(e + k))
+    if (binary_search(a.begin(), a.end(), e + k))
     {
       cout << "YES\n";
       return;
