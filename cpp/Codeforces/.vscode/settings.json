@@ -5,7 +5,7 @@
 	"cph.general.saveLocation": "/Users/agentofchaos/Developer/DailyExercise/cpp/Codeforces/bin",
 	"cph.general.defaultLanguageTemplateFileLocation": "/Users/agentofchaos/Developer/DailyExercise/cpp/Codeforces/template.cpp",
 	"cph.language.cpp.SubmissionCompiler": "GNU G++23 14.2 (64 bit, msys2)",
-	"cph.language.cpp.Command": "/opt/homebrew/Cellar/gcc/15.1.0/bin/g++-15",
+	"cph.language.cpp.Command": "/opt/homebrew/bin/g++-15",
 	"cph.language.cpp.Args": "-DONLINE_JUDGE -std=gnu++14 -std=c++23",
   "cph.general.doTemplateFileVariableReplacement": true,
   "cph.general.hideOutputDifference": false,
